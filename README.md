@@ -1,32 +1,4 @@
-<h1 align="center">IOPaint</h1>
-<p align="center">A free and open-source inpainting & outpainting tool powered by SOTA AI model.</p>
-
-<p align="center">
-  <a href="https://github.com/Sanster/IOPaint">
-    <img alt="total download" src="https://pepy.tech/badge/iopaint" />
-  </a>
-  <a href="https://pypi.org/project/iopaint">
-    <img alt="version" src="https://img.shields.io/pypi/v/iopaint" />
-  </a>
-  <a href="">
-    <img alt="python version" src="https://img.shields.io/pypi/pyversions/iopaint" />
-  </a>
-  <a href="https://huggingface.co/spaces/Sanster/iopaint-lama">
-    <img alt="HuggingFace Spaces" src="https://img.shields.io/badge/%F0%9F%A4%97%20HuggingFace-Spaces-blue" />
-  </a>
-  <a href="https://colab.research.google.com/drive/1TKVlDZiE3MIZnAUMpv2t_S4hLr6TUY1d?usp=sharing">
-    <img alt="Open in Colab" src="https://colab.research.google.com/assets/colab-badge.svg" />
-  </a>
-</p>
-
-|Erase([LaMa](https://www.iopaint.com/models/erase/lama))|Replace Object([PowerPaint](https://www.iopaint.com/models/diffusion/powerpaint))|
-|-----|----|
-|<video src="https://github.com/Sanster/IOPaint/assets/3998421/264bc27c-0abd-4d8b-bb1e-0078ab264c4a">  | <video src="https://github.com/Sanster/IOPaint/assets/3998421/1de5c288-e0e1-4f32-926d-796df0655846">|
-
-|Draw Text([AnyText](https://www.iopaint.com/models/diffusion/anytext))|Out-painting([PowerPaint](https://www.iopaint.com/models/diffusion/powerpaint))|
-|---------|-----------|
-|<video src="https://github.com/Sanster/IOPaint/assets/3998421/ffd4eda4-f7d4-4693-93d8-d2cd5aa7c6d6">|<video src="https://github.com/Sanster/IOPaint/assets/3998421/c4af8aef-8c29-49e0-96eb-0aae2f768da2">|
-
+# iopaint start --model=lama --device=cpu --port=8080
 
 ## Features
 

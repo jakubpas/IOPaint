@@ -1,0 +1,7 @@
+{
+    "stubPath": "./gi-stubs",
+    "typeCheckingMode": "basic",
+    "reportMissingImports": false,
+    "reportMissingTypeStubs": false
+}
+
