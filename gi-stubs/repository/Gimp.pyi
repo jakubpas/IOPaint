@@ -51,7 +51,7 @@ class PlugIn:
     def do_query_procedures(self) -> List[str]: ...
     def do_set_i18n(self, proc_name: str) -> bool: ...
     def do_create_procedure(self, name: str) -> 'Procedure': ...
-    def run(self, procedure: 'Procedure', run_mode: RunMode,
+    def run(self, procedure: 'Procedure', run_mode: RunMode, 
             image: 'Image', drawable: 'Drawable', *args, **kwargs) -> PDBStatusType: ...
 
 class Image:
@@ -78,7 +78,7 @@ class Layer(Drawable):
     def set_name(self, name: str) -> None: ...
     def fill(self, fill_type: FillType) -> None: ...
     @staticmethod
-    def new(image: 'Image', name: str, width: int, height: int,
+    def new(image: 'Image', name: str, width: int, height: int, 
             layer_type: ImageType, opacity: float, mode: LayerMode) -> 'Layer': ...
 
 class Procedure:
@@ -92,7 +92,7 @@ class Procedure:
 class ImageProcedure(Procedure):
     """GIMP Image Procedure object"""
     @staticmethod
-    def new(plugin: 'PlugIn', name: str, proc_type: PDBProcType,
+    def new(plugin: 'PlugIn', name: str, proc_type: PDBProcType, 
             run_func: Callable, data: Any) -> 'ImageProcedure': ...
 
 class RGB:

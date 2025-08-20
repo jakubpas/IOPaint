@@ -10,14 +10,18 @@ from enum import IntEnum
 class Gimp:
     """GIMP 3.0 API namespace"""
 
+    Channel = None
+    ImageBaseType = None
+    ChannelOps = None
+
     class ImageType(IntEnum):
         """Image types"""
-        RGB = 0
-        GRAY = 1
-        INDEXED = 2
+        RGB_IMAGE = None
+        GRAY_IMAGE = None
 
     class LayerMode(IntEnum):
         """Layer blend modes"""
+        NORMAL = None
         NORMAL_MODE = 0
         MULTIPLY_MODE = 1
         SCREEN_MODE = 2
@@ -25,6 +29,8 @@ class Gimp:
 
     class FillType(IntEnum):
         """Fill types"""
+        BACKGROUND = None
+        FOREGROUND = None
         WHITE_FILL = 0
         BLACK_FILL = 1
         TRANSPARENT_FILL = 2
@@ -68,14 +74,52 @@ class Gimp:
         @staticmethod
         def new(width: int, height: int, image_type: 'Gimp.ImageType') -> 'Gimp.Image': ...
 
+        def delete(self):
+            pass
+
+        def select_rectangle(self, REPLACE, x1, y1, param, param1):
+            pass
+
+        def get_height(self):
+            pass
+
+        def get_width(self):
+            pass
+
+        def insert_layer(self, mask_layer, param, param1):
+            pass
+
+        def select_item(self, REPLACE, selection):
+            pass
+
+        def select_item(self, REPLACE, selection):
+            pass
+
+        def get_selected_layers(self):
+            pass
+
+        def flatten(self):
+            pass
+
     class Selection(GObject.Object):
         """GIMP Selection object"""
-        def bounds(self) -> Tuple[bool, int, int, int, int]: ...
+        @staticmethod
+        def bounds(image: 'Gimp.Image') -> Tuple[bool, bool, int, int, int, int]: ...
         def get_region(self) -> Any: ...
+
+        @classmethod
+        def none(cls, mask_image):
+            pass
+
+        def save(self, image):
+            pass
 
     class Drawable(GObject.Object):
         """GIMP Drawable object"""
         pass
+
+        def edit_bucket_fill(self, FOREGROUND, param, param1):
+            pass
 
     class Layer(Drawable):
         """GIMP Layer object"""
@@ -111,26 +155,41 @@ class Gimp:
     def message(message: str) -> None: ...
 
     @staticmethod
-    def file_save(image: 'Gimp.Image', drawables: List['Gimp.Drawable'],
-                  filename: str, raw_filename: str) -> None: ...
+    def file_save(run_mode: 'Gimp.RunMode', image: 'Gimp.Image', file: 'Gio.File', options: Optional['Gimp.ExportOptions']) -> None: ...
 
     @staticmethod
-    def file_load_layer(image: 'Gimp.Image', filename: str) -> 'Gimp.Layer': ...
+    def file_load_layer(run_mode: 'Gimp.RunMode', image: 'Gimp.Image', file: 'Gio.File') -> 'Gimp.Layer': ...
 
     @staticmethod
-    def progress_init(progress: Any, message: str) -> None: ...
+    def progress_init(message: str) -> None: ...
 
     @staticmethod
-    def progress_update(progress: Any, percentage: float) -> None: ...
+    def progress_update(percentage: float) -> None: ...
 
     @staticmethod
-    def progress_set_text(progress: Any, message: str) -> None: ...
+    def progress_set_text(message: str) -> None: ...
 
     @staticmethod
-    def progress_end(progress: Any) -> None: ...
+    def progress_end() -> None: ...
 
     @staticmethod
     def main(plugin_type: Any, argv: List[str]) -> None: ...
+
+    @classmethod
+    def context_set_foreground(cls, param):
+        pass
+
+    @classmethod
+    def context_push(cls):
+        pass
+
+    @classmethod
+    def context_pop(cls):
+        pass
+
+    @classmethod
+    def context_set_background(cls, param):
+        pass
 
 
 class GObject:
@@ -138,3 +197,13 @@ class GObject:
     class Object:
         """Base GObject object"""
         pass
+
+
+class Gio:
+    File = None
+
+
+class Gegl:
+    Rectangle = None
+    Buffer = None
+    Color = None

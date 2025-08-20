@@ -61,27 +61,11 @@ class IopaintErase(Gimp.PlugIn):
         debug_log(f"Procedure: {procedure}, Run Mode: {run_mode}, Image: {image}, Drawable: {drawable}")
         debug_log(f"Extra args: {args}, Extra kwargs: {kwargs}")
 
-        # 1. Check for a selection
-        debug_log("Checking for selection...")
-        try:
-            # Capture all returned values from bounds() to see what's actually returned
-            has_selection, non_empty, x1, y1, x2, y2 = Gimp.Selection.bounds(image)
-            debug_log(
-                f"Selection.bounds() returned: has_selection={has_selection}, non_empty={non_empty}, x1={x1}, y1={y1}, x2={x2}, y2={y2}")
-
-            if not has_selection:
-                Gimp.message("IOPaint Plugin: Please make a selection to erase.")
-                debug_log("No selection found (has_selection is False). Exiting.")
-                return Gimp.PDBStatusType.CALLING_ERROR
-            debug_log("Selection found. Proceeding.")
-        except Exception as e:
-            debug_log(f"Error during selection check: {e}")
-            Gimp.message(f"IOPaint Plugin Error during selection check: {e}")
-            return Gimp.PDBStatusType.CALLING_ERROR
-
         Gimp.progress_init("Running IOPaint Erase...")
         debug_log("Progress bar initialized.")
 
+        Gimp.context_set_foreground(Gegl.Color.new("#FFFFFF"))
+        Gimp.context_set_background(Gegl.Color.new("#000000"))
         try:
             # 2. Prepare temporary files
             image_path = self.get_temp_path(".png")
@@ -92,59 +76,54 @@ class IopaintErase(Gimp.PlugIn):
             debug_log(f"Output directory: {output_dir}")
 
             # Save the original image using GIMP 3.0 API
-            image_obj = Gio.File.new_for_path(image_path)
             debug_log("save image")
-            Gimp.file_save(Gimp.RunMode.NONINTERACTIVE, image, image_obj, None)
+            Gimp.file_save(Gimp.RunMode.NONINTERACTIVE, image, Gio.File.new_for_path(image_path), None)
             debug_log(f"Image saved to {image_path}")
 
             # Create mask from selection using GIMP 3.0 API
             debug_log("Creating mask from selection...")
-            selection = image.get_selection()
             debug_log("Created mask from selection...")
 
-            # Create a new grayscale image for the mask
-            mask_image = Gimp.Image.new(image.get_width(), image.get_height(), Gimp.ImageBaseType.GRAY)
-            mask_layer = Gimp.Layer.new(mask_image, "Mask",
-                                       image.get_width(), image.get_height(),
-                                       Gimp.ImageType.GRAY_IMAGE, 100.0, Gimp.LayerMode.NORMAL)
-            mask_image.insert_layer(mask_layer, None, 0)
-            debug_log("Created mask layer")
 
-            # Fill with black background
-            mask_layer.fill(Gimp.FillType.BACKGROUND)
-            debug_log("Filled mask layer with black background")
-            # Get selection bounds and convert selection to white area on mask
-            # non_empty, x1, y1, x2, y2 = selection.bounds()
             successful, non_empty, x1, y1, x2, y2 = Gimp.Selection.bounds(image)
-            if non_empty:
-                debug_log(f"Selection bounds: x1={x1}, y1={y1}, x2={x2}, y2={y2}")
-
-                # Set foreground to white and fill the selection area
-                Gimp.context_push()
-                Gimp.context_set_foreground(Gegl.Color.new("rgb(255, 0, 0)"))
-
-                # Create the same selection on the mask image and fill with white
-                mask_image.select_rectangle(Gimp.ChannelOps.REPLACE, x1, y1, x2-x1, y2-y1)
-                Gimp.Drawable.edit_bucket_fill(mask_layer, Gimp.FillType.FOREGROUND, x1 + (x2-x1)//2, y1 + (y2-y1)//2)
-                #Gimp.drawable_edit_bucket_fill(mask_layer, Gimp.FillType.FOREGROUND, x1 + (x2-x1)//2, y1 + (y2-y1)//2)
-                # mask_image.select_none()
-                Gimp.Selection.none(mask_image)
-
-                Gimp.context_pop()
-                debug_log("Mask created successfully from selection")
-            else:
-                debug_log("No selection found for mask creation")
-                Gimp.message("IOPaint Error: No selection found for mask creation.")
+            if not successful or not non_empty:
+                Gimp.message("Unable to get selection bounds.")
+                debug_log("Unable to get selection bounds")
                 return Gimp.PDBStatusType.CALLING_ERROR
 
-            # Save the mask using GIMP 3.0 API
-            mask_file = Gio.File.new_for_path(mask_path)
-            debug_log("save mask")
-            Gimp.file_save(Gimp.RunMode.NONINTERACTIVE, mask_image, mask_file, None)
-            debug_log(f"Mask saved to {mask_path}")
+            # Calculate center point of selection for bucket fill
+            center_x = x1 + (x2 - x1) // 2
+            center_y = y1 + (y2 - y1) // 2
 
-            # Clean up temporary mask image
-            mask_image.delete()
+            #------
+            result_layer = Gimp.Layer.new(
+                image,
+                "Black/White Result",
+                image.get_width(),
+                image.get_height(),
+                Gimp.ImageType.RGB_IMAGE,
+                100.0,
+                Gimp.LayerMode.NORMAL
+            )
+            image.insert_layer(result_layer, None, 0)
+            debug_log("Created new result layer")
+            Gimp.context_push()
+            Gimp.context_set_foreground(Gegl.Color.new("#FFFFFF"))  # White
+            Gimp.context_set_background(Gegl.Color.new("#000000"))  # Black
+            result_layer.fill(Gimp.FillType.BACKGROUND)
+            Gimp.Drawable.edit_bucket_fill(
+                result_layer,
+                Gimp.FillType.FOREGROUND,
+                center_x,
+                center_y
+            )
+            Gimp.context_pop()
+            Gimp.Image.flatten(image)
+
+            # Save the mask using GIMP 3.0 API
+            debug_log("save mask")
+            Gimp.file_save(Gimp.RunMode.NONINTERACTIVE, image, Gio.File.new_for_path(mask_path), None)
+            debug_log(f"Mask saved to {mask_path}")
 
             Gimp.progress_update(0.2)
 
@@ -198,10 +177,10 @@ class IopaintErase(Gimp.PlugIn):
             debug_log("Result layer loaded and added to image.")
 
             # Clean up
-            for path in [image_path, mask_path, final_output_path]:
-                if os.path.exists(path):
-                    os.remove(path)
-                    debug_log(f"Cleaned up: {path}")
+            # for path in [image_path, mask_path, final_output_path, mask_image]:
+            #     if os.path.exists(path):
+            #         os.remove(path)
+            #         debug_log(f"Cleaned up: {path}")
 
             Gimp.progress_update(1.0)
 
