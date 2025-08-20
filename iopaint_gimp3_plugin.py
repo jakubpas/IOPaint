@@ -170,17 +170,16 @@ class IopaintErase(Gimp.PlugIn):
             image_file = Gio.File.new_for_path(final_output_path)
             result_layer = Gimp.file_load_layer(Gimp.RunMode.NONINTERACTIVE, image, image_file)
             debug_log(f"Result layer loaded from {final_output_path}")
-            #Todo - should I leave it here?
-            # image.add_layer(result_layer, 0)
+            image.insert_layer(result_layer, None, 0)
             debug_log("Result layer added to image.")
             result_layer.set_name(f"IOPaint {self.MODEL} Result")
             debug_log("Result layer loaded and added to image.")
 
-            # Clean up
-            # for path in [image_path, mask_path, final_output_path, mask_image]:
-            #     if os.path.exists(path):
-            #         os.remove(path)
-            #         debug_log(f"Cleaned up: {path}")
+            #Clean up
+            for path in [image_path, mask_path, final_output_path, mask_image]:
+                if os.path.exists(path):
+                    os.remove(path)
+                    debug_log(f"Cleaned up: {path}")
 
             Gimp.progress_update(1.0)
 
@@ -193,7 +192,7 @@ class IopaintErase(Gimp.PlugIn):
             Gimp.progress_end()
             debug_log("--- IOPaint Plugin Finished ---")
 
-        return Gimp.PDBStatusType.SUCCESS
+        return (Gimp.PDBStatusType.SUCCESS,)
 
     def get_temp_path(self, extension):
         # A helper function to create temporary file paths
