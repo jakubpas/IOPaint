@@ -1,12 +1,1 @@
-.DS_Store
-**/__pycache__
-examples/
-.idea/
-.vscode/
-build
-!iopaint/app/build
-dist/
-IOPaint.egg-info/
-venv/
-tmp/
-iopaint/web_app/
+.idea

@@ -1,9 +1,5 @@
-"""
-GIMP 3.0 Type Stubs
-This file provides type hints for the GIMP 3.0 Python API
-"""
-
-from typing import Any, List, Tuple, Optional, Union, Callable
+# GIMP 3.0 Type Stubs for better IDE support
+from typing import Any, List, Tuple, Callable
 from gi.repository import GObject
 
 

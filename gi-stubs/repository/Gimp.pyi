@@ -1,8 +1,5 @@
-"""
-GIMP 3.0 Module Stub
-"""
-
-from typing import Any, List, Tuple, Optional, Union, Callable
+# GIMP 3.0 Type Stubs for better IDE support
+from typing import Any, List, Tuple, Callable
 from enum import IntEnum
 
 

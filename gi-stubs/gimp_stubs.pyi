@@ -1,5 +1,5 @@
 # GIMP 3.0 Type Stubs for better IDE support
-from typing import Any, List, Tuple, Optional, Union
+from typing import Any, List, Tuple
 from gi.repository import GObject
 
 class Gimp:

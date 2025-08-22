@@ -1,110 +1,225 @@
-# iopaint start --model=lama --device=cpu --port=8080
+# IOPaint Erase - GIMP 3.0 Plugin
+
+**AI-Powered Object Removal Plugin for GIMP 3.0**
+
+A GIMP plugin for AI object removal from photos. It creates black and white masks from user selections and uses 
+IOPaint's advanced AI models to intelligently remove objects from images.
+
+## What It Does
+
+This plugin transforms your GIMP selection workflow by:
+
+1. **Selection to Mask**: Converts any GIMP selection into a binary mask (white selected area, black background)
+2. **AI Inpainting**: Uses IOPaint's LaMa model to intelligently fill the selected area
+3. **Seamless Integration**: Returns the result as a new layer in your GIMP image
+
+Perfect for removing unwanted objects, people, text, watermarks, or any other elements from your photos.
 
 ## Features
 
-- Completely free and open-source, fully self-hosted, support CPU & GPU & Apple Silicon
-- [Windows 1-Click Installer](https://www.iopaint.com/install/windows_1click_installer)
-- [OptiClean](https://apps.apple.com/ca/app/opticlean/id6452387177): macOS & iOS App for object erase
-- Supports various AI [models](https://www.iopaint.com/models) to perform erase, inpainting or outpainting task.
-  - [Erase models](https://www.iopaint.com/models#erase-models): These models can be used to remove unwanted object, defect, watermarks, people from image.
-  - Diffusion models: These models can be used to replace objects or perform outpainting. Some popular used models include:
-    - [runwayml/stable-diffusion-inpainting](https://huggingface.co/runwayml/stable-diffusion-inpainting)
-    - [diffusers/stable-diffusion-xl-1.0-inpainting-0.1](https://huggingface.co/diffusers/stable-diffusion-xl-1.0-inpainting-0.1)
-    - [andregn/Realistic_Vision_V3.0-inpainting](https://huggingface.co/andregn/Realistic_Vision_V3.0-inpainting)
-    - [Lykon/dreamshaper-8-inpainting](https://huggingface.co/Lykon/dreamshaper-8-inpainting)
-    - [Sanster/anything-4.0-inpainting](https://huggingface.co/Sanster/anything-4.0-inpainting)
-    - [BrushNet](https://www.iopaint.com/models/diffusion/brushnet)
-    - [PowerPaintV2](https://www.iopaint.com/models/diffusion/powerpaint_v2)
-    - [Sanster/AnyText](https://huggingface.co/Sanster/AnyText)
-    - [Fantasy-Studio/Paint-by-Example](https://huggingface.co/Fantasy-Studio/Paint-by-Example)
-
-- [Plugins](https://www.iopaint.com/plugins):
-  - [Segment Anything](https://iopaint.com/plugins/interactive_seg): Accurate and fast Interactive Object Segmentation
-  - [RemoveBG](https://iopaint.com/plugins/rembg): Remove image background or generate masks for foreground objects
-  - [Anime Segmentation](https://iopaint.com/plugins/anime_seg): Similar to RemoveBG, the model is specifically trained for anime images.
-  - [RealESRGAN](https://iopaint.com/plugins/RealESRGAN): Super Resolution
-  - [GFPGAN](https://iopaint.com/plugins/GFPGAN): Face Restoration
-  - [RestoreFormer](https://iopaint.com/plugins/RestoreFormer): Face Restoration
-- [FileManager](https://iopaint.com/file_manager): Browse your pictures conveniently and save them directly to the output directory.
-
+- ✨ **One-Click Object Removal**: Simply select and remove
+- 🎯 **Precise Selection Support**: Works with any GIMP selection tool
+- 🤖 **AI-Powered**: Uses a state-of-the-art LaMa (Large Mask Inpainting) model
+- 📊 **Progress Tracking**: Real-time progress updates
+- 🔧 **Configurable**: Support for multiple AI models and devices
+- 🧹 **Auto Cleanup**: Handles temporary files automatically
+- 📝 **Debug Logging**: Comprehensive error reporting
 
 ## Quick Start
 
-### Start webui
+### Prerequisites
 
-IOPaint provides a convenient webui for using the latest AI models to edit your images.
-You can install and start IOPaint easily by running following command:
+- GIMP 3.0+
+- Python 3.10+
+- IOPaint installed: `pip install iopaint`
 
+### Installation
+
+1. **Download the Plugin**
+   ```bash
+   wget https://github.com/jakubpas/iopaint_gimp3_plugin.git
+   ```
+
+2. **Copy to GIMP Plugin Directory**
+   ```bash
+   # macOS
+   mkdir -p ~/Library/Application\ Support/GIMP/3.0/plug-ins/iopaint_gimp3_plugim
+   cp iopaint_gimp3_plugin.py ~/Library/Application\ Support/GIMP/3.0/plug-ins/iopaint_gimp3_plugin/
+   
+   # Linux
+   mkdir -p ~/Library/Application\ Support/GIMP/3.0/plug-ins/iopaint_gimp3_plugim
+   cp iopaint_gimp3_plugin.py ~/.config/GIMP/3.0/plug-ins/opaint_gimp3_plugim/
+   
+   # Windows
+   mkdir %APPDATA%\GIMP\3.0\plug-ins\opaint_gimp3_plugim
+   copy iopaint_gimp3_plugin.py %APPDATA%\GIMP\3.0\plug-ins\opaint_gimp3_plugim\
+   ```
+
+3. **Make Executable** (Unix-like systems)
+   ```bash
+   chmod +x ~/Library/Application\ Support/GIMP/3.0/plug-ins/iopaint_gimp3_plugin.py
+   ```
+
+4. **Configure Plugin**
+   
+   Edit the plugin file to set your IOPaint path:
+   ```python
+   IOPAINT_EXECUTABLE = "/usr/local/bin/iopaint"  # Update this path
+   ```
+   
+   Find your IOPaint path with: `which iopaint`
+
+### Usage
+
+1. **Open Image** in GIMP 3.0
+2. **Select Area** to remove using any selection tool
+3. **Run Plugin**: `Tools` → `IOPaint Erase`
+4. **Wait** for AI processing (progress bar shown)
+5. **Review Result** in a new layer
+
+## Configuration
+
+### Available Models
+
+Edit the plugin to change the AI model:
+
+```python
+MODEL = "lama"    # Default - best for most cases
+# MODEL = "ldm"   # Latent Diffusion Model
+# MODEL = "zits"  # ZITS inpainting
+# MODEL = "mat"   # Mask-Aware Transformer
+# MODEL = "fcf"   # Foreground-aware Content Fill
+```
+
+### Device Settings
+
+```python
+DEVICE = "cpu"    # CPU processing (slower, compatible)
+# DEVICE = "cuda" # GPU acceleration (faster, requires NVIDIA GPU)
+```
+
+## Workflow Tips
+
+### Best Practices
+
+- **Precise Selections**: Use the Free Select tool for irregular objects
+- **Prefer convex figures**: Avoid concave figure for the proper center of mass calculation to accurate mask creation
+- **Feathered Edges**: Add slight feather to selections for smoother results
+- **Multiple Passes**: For complex removals, work in smaller sections
+- **Layer Management**: Keep the original layer intact, work with copies
+
+### Selection Tools Recommended
+
+- **Free Select Tool**: Best for irregular objects
+- **Fuzzy Select**: Good for areas with similar colors
+- **By Color Select**: Effective for backgrounds
+- **Rectangle/Ellipse**: Perfect for geometric objects
+
+## Troubleshooting
+
+### Common Issues
+
+| Problem | Solution |
+|---------|----------|
+| Plugin not in menu | Restart GIMP, check file permissions |
+| "IOPaint not found" | Update `IOPAINT_EXECUTABLE` path |
+| "No selection" error | Make sure area is selected before running |
+| Slow processing | Switch to GPU mode or use smaller images |
+| Out of memory | Use CPU mode, close other applications |
+
+### Debug Information
+
+Check the debug log for detailed error information:
 ```bash
-# In order to use GPU, install cuda version of pytorch first.
-# pip3 install torch==2.1.2 torchvision==0.16.2 --index-url https://download.pytorch.org/whl/cu118
-# AMD GPU users, please utilize the following command, only works on linux, as pytorch is not yet supported on Windows with ROCm.
-# pip3 install torch==2.1.2 torchvision==0.16.2 --index-url https://download.pytorch.org/whl/rocm5.6
-
-pip3 install iopaint
-iopaint start --model=lama --device=cpu --port=8080
+tail -f /tmp/iopaint_gimp_debug.log
 ```
 
-That's it, you can start using IOPaint by visiting http://localhost:8080 in your web browser.
+### Performance Tips
 
-All models will be downloaded automatically at startup. If you want to change the download directory, you can add `--model-dir`. More documentation can be found [here](https://www.iopaint.com/install/download_model)
+- **Image Size**: Smaller images process faster
+- **GPU vs CPU**: GPU is 5-10x faster if available
+- **Model Choice**: LAMA is fastest, LDM is most accurate
+- **Selection Size**: Smaller selections process quicker
 
-You can see other supported models at [here](https://www.iopaint.com/models) and how to use local sd ckpt/safetensors file at [here](https://www.iopaint.com/models#load-ckptsafetensors).
+## Technical Details
 
-### Plugins
+### Plugin Architecture
 
-You can specify which plugins to use when starting the service, and you can view the commands to enable plugins by using `iopaint start --help`. 
+```
+User Selection → Binary Mask → IOPaint AI → Result Layer
+```
 
-More demonstrations of the Plugin can be seen [here](https://www.iopaint.com/plugins)
+1. **Mask Creation**: Selection converted to black/white PNG
+2. **AI Processing**: IOPaint command-line tool processes image
+3. **Result Import**: Processed image loaded as new GIMP layer
+4. **Cleanup**: Temporary files automatically removed
 
+### File Locations
+
+- **Plugin**: `~/.config/GIMP/3.0/plug-ins/iopaint_gimp3_plugin.py`
+- **Debug Log**: `/tmp/iopaint_gimp_debug.log`
+- **Temp Files**: System temp directory (auto-cleaned)
+
+## Advanced Usage
+
+### Batch Processing
+
+For multiple images, consider using IOPaint directly:
 ```bash
-iopaint start --enable-interactive-seg --interactive-seg-device=cuda
+iopaint run --model lama --device cpu --image input.jpg --mask mask.png --output results/
 ```
 
-### Batch processing
+### Custom Models
 
-You can also use IOPaint in the command line to batch process images:
-
-```bash
-iopaint run --model=lama --device=cpu \
---image=/path/to/image_folder \
---mask=/path/to/mask_folder \
---output=output_dir
+To use custom trained models, modify the plugin:
+```python
+MODEL = "path/to/your/custom/model"
 ```
 
-`--image` is the folder containing input images, `--mask` is the folder containing corresponding mask images.
-When `--mask` is a path to a mask file, all images will be processed using this mask.
+### Integration with Other Plugins
 
-You can see more information about the available models and plugins supported by IOPaint below.
+This plugin works well with:
+- **G'MIC**: For advanced selections
+- **Resynthesizer**: For texture synthesis
+- **Layer Effects**: For post-processing
 
-## Development
+## Contributing
 
-Install [nodejs](https://nodejs.org/en), then install the frontend dependencies.
+### Development Setup
 
-```bash
-git clone https://github.com/Sanster/IOPaint.git
-cd IOPaint/web_app
-npm install
-npm run build
-cp -r dist/ ../iopaint/web_app
-```
+1. Clone the repository
+2. Install development dependencies
+3. Set up GIMP 3.0 development environment
+4. Test with sample images in `assets/`
 
-Create a `.env.local` file in `web_app` and fill in the backend IP and port.
-```
-VITE_BACKEND=http://127.0.0.1:8080
-```
+### Reporting Issues
 
-Start front-end development environment
-```bash
-npm run dev
-```
+Please include:
+- GIMP version
+- Python version
+- IOPaint version
+- Debug log contents
+- Sample image (if possible)
 
-Install back-end requirements and start backend service
-```bash
-pip install -r requirements.txt
-python3 main.py start --model lama --port 8080
-```
+## License
 
-Then you can visit `http://localhost:5173/` for development.
-The frontend code will automatically update after being modified,
-but the backend needs to restart the service after modifying the python code.
+This plugin is released under the MIT License. See [LICENSE](LICENSE) for details.
+
+## Acknowledgments
+
+- **IOPaint Team**: For the amazing AI inpainting library
+- **GIMP Developers**: For the powerful image editing platform
+- **LaMa Authors**: For the state-of-the-art inpainting model
+- **Community**: For testing and feedback
+
+## Related Projects
+
+- [IOPaint](https://github.com/Sanster/IOPaint) - The AI inpainting library
+- [GIMP](https://www.gimp.org/) - GNU Image Manipulation Program
+- [LaMa](https://github.com/saic-mdal/lama) - Large Mask Inpainting model
+
+---
+
+**Made with ❤️ for the GIMP community**
+
+> Need help? Open an issue or check the [troubleshooting guide](#troubleshooting) above.

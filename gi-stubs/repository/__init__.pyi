@@ -1,8 +1,5 @@
-"""
-GIMP 3.0 Type Stubs for gi.repository
-"""
-
-from typing import Any, List, Tuple, Optional, Union, Callable
+# GIMP 3.0 Type Stubs for better IDE support
+from typing import Any, List, Tuple, Optional, Callable
 from gi.repository import GObject
 from enum import IntEnum
 
