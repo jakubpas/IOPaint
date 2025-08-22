@@ -2,6 +2,8 @@
 
 **AI-Powered Object Removal Plugin for GIMP 3.0**
 
+*Created by Jakub Pas*
+
 A GIMP plugin for AI object removal from photos. It creates black and white masks from user selections and uses 
 IOPaint's advanced AI models to intelligently remove objects from images.
 
@@ -62,12 +64,12 @@ Perfect for removing unwanted objects, people, text, watermarks, or any other el
 
 4. **Configure Plugin**
    
-   Edit the plugin file to set your IOPaint path:
+   Edit the plugin file to set your IOPaint path for example:
    ```python
-   IOPAINT_EXECUTABLE = "/usr/local/bin/iopaint"  # Update this path
+   IOPAINT_EXECUTABLE = "/Library/Frameworks/Python.framework/Versions/3.10/bin/iopaint" # Update this path
    ```
    
-   Find your IOPaint path with: `which iopaint`
+   You can find your IOPaint path with: `which iopaint` or `where iopaint` on Windows.
 
 ### Usage
 
