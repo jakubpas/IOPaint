@@ -49,8 +49,8 @@ Perfect for removing unwanted objects, people, text, watermarks, or any other el
    cp iopaint_gimp3_plugin.py ~/Library/Application\ Support/GIMP/3.0/plug-ins/iopaint_gimp3_plugin/
    
    # Linux
-   mkdir -p ~/Library/Application\ Support/GIMP/3.0/plug-ins/iopaint_gimp3_plugim
-   cp iopaint_gimp3_plugin.py ~/.config/GIMP/3.0/plug-ins/opaint_gimp3_plugim/
+   mkdir -p ~/.config/GIMP/3.0/plug-ins/iopaint_gimp3_plugin
+   cp iopaint_gimp3_plugin.py ~/.config/GIMP/3.0/plug-ins/iopaint_gimp3_plugin/
    
    # Windows
    mkdir %APPDATA%\GIMP\3.0\plug-ins\opaint_gimp3_plugim
