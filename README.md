@@ -39,7 +39,7 @@ Perfect for removing unwanted objects, people, text, watermarks, or any other el
 
 1. **Download the Plugin**
    ```bash
-   wget https://github.com/jakubpas/iopaint_gimp3_plugin.git
+   wget https://raw.githubusercontent.com/jakubpas/iopaint_gimp3_plugin/refs/heads/main/iopaint_gimp3_plugin.py
    ```
 
 2. **Copy to GIMP Plugin Directory**
